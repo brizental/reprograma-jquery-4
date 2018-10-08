@@ -1,27 +1,28 @@
-MINES = 40;
-HEIGHT = 20;
-WIDTH = 15;
+MINES = 40; //Quantidade de minas
+HEIGHT = 20; //Altura
+WIDTH = 15; //Largura
 
 function getUniqueRandomIndexesIn2DArray(table, indexes) {
     indexes = indexes ? indexes : [];
     for (var i = indexes.length; i < MINES; i++) {
-        var random_cell = Math.floor(Math.random() * WIDTH);
-        var random_row = Math.floor(Math.random() * HEIGHT);
-        for (var j = 0; j < indexes.length; j++) {
-            if (indexes[j][0] === random_cell &&
+        var random_cell = Math.floor(Math.random() * WIDTH); //De acordo com a largura
+        var random_row = Math.floor(Math.random() * HEIGHT); //De acordo com a altura
+        for (var j = 0; j < indexes.length; j++) { //indexes é um argumento da função
+            if (indexes[j][0] === random_cell && /
                 indexes[j][1] === random_row) {
                 return arguments.callee(table, indexes);
             }
         }
-        indexes.push([random_cell, random_row]);
+        indexes.push([random_row, random_cell]);
     }
     return indexes;
 }
 
+//Números em torno das minas
 function getAdjacentCellIndexes(x, y) {
     return $.grep([
-        [ x - 1, y - 1 ],
-        [ x, y - 1 ],
+        [ x - 1, y - 1 ], 
+        [ x, y - 1 ], 
         [ x + 1, y - 1 ],
         [ x - 1, y ],
         [ x + 1, y ],
@@ -29,11 +30,12 @@ function getAdjacentCellIndexes(x, y) {
         [ x, y + 1 ],
         [ x + 1, y + 1 ]
     ], function (element) {
-        return element[0] >= 0 && element[1] >= 0
-            && element[0] < WIDTH && element[0] < HEIGHT
+        return element[0] >= 0 && element[1] >= 0 &&
+        element[1] < WIDTH && element[0] < HEIGHT
     });
 }
 
+//Criação da tabela
 var field_matrix = [];
 var field = $("#field table");
 for (var i = 0; i < HEIGHT; i++) {
@@ -59,7 +61,7 @@ $.each(mine_indexes, function(index, coordinates) {
 });
 
 $.each(mine_indexes, function (index, coordinates) {
-    var adjacent_cells = getAdjacentCellIndexes(coordinates[1], coordinates[0]);
+    var adjacent_cells = getAdjacentCellIndexes(coordinates[0], coordinates[1]);
     $.each(adjacent_cells, function(index, coordinates) {
         var x = coordinates[0];
         var y = coordinates[1];
@@ -97,9 +99,11 @@ $.each(mine_indexes, function (index, coordinates) {
     })
 });
 
+
 $.each(field_matrix, function(index, row) {
     $.each(row, function(index, cell) {
         var number = $(cell).data("mines");
+        console.log(number)
         if (number > 0) {
             $(cell).append(number);
         }
