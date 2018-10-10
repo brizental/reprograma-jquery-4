@@ -68,16 +68,42 @@ body {
     }
 
     .window-controls {
-        padding: 10px 5px;
+        padding: 15px 5px;
+        height: 15px;
+        display: flex;
+        align-items: center;
 
         a {
+            width: 100px;
             text-decoration: none;
-            display: inline-block;
-            margin-right: 10px;
 
             &:hover {
                 background-color: $windows-blue;
                 color: white;
+            }
+        }
+
+        .menu {
+            background-color: $windows-light-gray; 
+            height: inherit;
+            border: 1px $windows-light-gray;
+
+            &-nivels{ 
+                display: flex;
+
+                &__options {
+                    display: none;
+                    list-style-type:none;
+                    position: absolute;
+                    z-index: 999999999999;
+                    
+                    li {
+                        width: 90px;
+                        padding: 3px 0;
+                        // border: 1px groove $windows-light-gray;
+                        background-color: $windows-light-gray; 
+                    }
+                }
             }
         }
     }
