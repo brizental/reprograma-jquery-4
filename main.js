@@ -1,65 +1,122 @@
-//----------- Modelo antigo de definição para variáveis globais são definidas
-// no topo, em letra maiúscula
+/*----------- O modelo antigo de definição para variáveis globais são definidas no topo, em letra maiúscula:
+    MINES = 40;  Quantidade de minas do jogo do 'Campo Minado'
+    HEIGHT = 20; Altura do tabuleiro
+    WIDTH = 15;  Largura do tabuleiro */
 
-MINES = 40; // Quantidade de minas do jogo do 'Campo Minado'
-HEIGHT = 20; // Altura do tabuleiro
-WIDTH = 15; // Largura do tabuleiro 
+
+/* Níveis do jogo: 
+- Básico: 
+    height: 8
+    width: 8
+    minas: 10
+- Intermediário: 
+    height: 16
+    width: 16
+    minas: 40
+- Avançado: 
+    height: 24
+    width: 24
+    mines: 99 */
+
+
+$(".menu").hover(
+    function(){
+        $("#menuNivelsOptions").toggle(true);
+        $(".menu-nivels__options_bas").click(function(event){
+            $("#field table").empty();
+            event.preventDefault();
+            MINES = 10;
+            HEIGHT = 8;
+            WIDTH = 8;
+            startGame();
+            $(".window").css("width", "260px");
+        });   
+      
+        $(".menu-nivels__options_int").click(function(event){
+            $("#field table").empty();
+            event.preventDefault();
+            MINES = 40;
+            HEIGHT = 16;
+            WIDTH = 16;
+            startGame();
+            $(".window").css("width", "500px");
+        });
+             
+        $(".menu-nivels__options_adv").click(function(event){
+            $("#field table").empty();
+            event.preventDefault();
+            MINES = 99;
+            HEIGHT = 24;
+            WIDTH = 24;   
+            startGame();
+            $(".window").css("width", "740px");
+        });
+    },
+
+    function(event){
+        $("#menuNivelsOptions").toggle(false);
+        event.preventDefault();
+});
+
+
 TIMER = false;
 
-function getUniqueRandomIndexesIn2DArray(tables, indexes) { //Pega Index randomico com arrays 2D (matrix) -> array de arrays
-    indexes = indexes ? indexes : []; //verifica se o valor é verdadeiro é falso; 
-    //Se verdadeiro, retorna 'indexes', se falso retorna [] (array vazio);
-    
-    //----------looping 
-    // Vai rodar a quantidade de minas que eu quero ter no tabuleiro 
-    for (var i = indexes.length; i < MINES; i++) {
-        var random_cell = Math.floor(Math.random() * WIDTH); //coordenada de acordo com a largura(linha) // x
-        var random_row = Math.floor(Math.random() * HEIGHT); //coordenada de acordo com a altura(coluna) // y
 
-        //------- Looping para garantir que teremos INDEXES ÚNICOS (nenhuma bomba fique em cima da outra)
-        for (var j = 0; j < indexes.length; j++) { 
-            if (indexes[j][0] === random_cell && // se x for igual a uma célula já criada
-                indexes[j][1] === random_row) { // se y for igual a uma célula já criada
-                return arguments.callee(tables, indexes); //
-                //==== return getUniqueRandomIndexesIn2DArray (table, indexes);
-                // ele reinicia o looping da função, mas não do 0. 
-                // O looping começa novamente a rodar de acordo com o comprimento do indexes
+function startGame() {
+    function getUniqueRandomIndexesIn2DArray(tables, indexes) { //Pega Index randomico com arrays 2D (matrix) -> array de arrays
+        indexes = indexes ? indexes : []; //verifica se o valor é verdadeiro é falso; 
+        //Se verdadeiro, retorna 'indexes', se falso retorna [] (array vazio);
+
+        //----------looping 
+        // Vai rodar a quantidade de minas que eu quero ter no tabuleiro 
+        for (var i = indexes.length; i < MINES; i++) {
+            var random_cell = Math.floor(Math.random() * WIDTH); //coordenada de acordo com a largura(linha) // x
+            var random_row = Math.floor(Math.random() * HEIGHT); //coordenada de acordo com a altura(coluna) // y
+
+            //------- Looping para garantir que teremos INDEXES ÚNICOS (nenhuma bomba fique em cima da outra)
+            for (var j = 0; j < indexes.length; j++) {
+                if (indexes[j][0] === random_cell && // se x for igual a uma célula já criada
+                    indexes[j][1] === random_row) { // se y for igual a uma célula já criada
+                    return arguments.callee(tables, indexes); //
+                    //==== return getUniqueRandomIndexesIn2DArray (table, indexes);
+                    // ele reinicia o looping da função, mas não do 0. 
+                    // O looping começa novamente a rodar de acordo com o comprimento do indexes
+                }
             }
-        } 
-        indexes.push([random_cell, random_row]);
-    } 
-    return indexes;
-}
+            indexes.push([random_cell, random_row]);
+        }
+        return indexes;
+    }
 
-//---------- Números criados em torno das minas
-function getAdjacentCellIndexes(x, y) { //Pega as coordenadas da cédula e as define 
-    // celulas adjacentes: https://imgur.com/a/bTJ1r0o
-    return $.grep([ //grep é uma função 'filtro' que elimina as coordenadas fora do tabuleiro
-        [ x - 1, y - 1 ], 
-        [ x, y - 1 ], 
-        [ x + 1, y - 1 ],
-        [ x - 1, y ],
-        [ x + 1, y ],
-        [ x - 1, y + 1 ],
-        [ x, y + 1 ],
-        [ x + 1, y + 1 ]
-    ], function (element) {
-        return element[0] >= 0 && element[1] >= 0 && element[0] < WIDTH && element[1] < HEIGHT
-    });
-}
+    //---------- Números criados em torno das minas
+    function getAdjacentCellIndexes(x, y) { //Pega as coordenadas da cédula e as define 
+        // celulas adjacentes: https://imgur.com/a/bTJ1r0o
+        return $.grep([ //grep é uma função 'filtro' que elimina as coordenadas fora do tabuleiro
+            [x - 1, y - 1],
+            [x, y - 1],
+            [x + 1, y - 1],
+            [x - 1, y],
+            [x + 1, y],
+            [x - 1, y + 1],
+            [x, y + 1],
+            [x + 1, y + 1]
+        ], function (element) {
+            return element[0] >= 0 && element[1] >= 0 && element[0] < WIDTH && element[1] < HEIGHT
+        });
+    }
 
-//---------- Execução do código em si
+    //---------- Execução do código em si
 
-var field_matrix = []; //começa com uma array vazia 
-var field = $("#field table"); //field é a tabela prescrita no HTML
-var counter = 0;
-//$... é um seletor de jQuery, que funciona exatamente como um querySelectorAll 
-//Até aqui estamos selecionando a tabela a ser preenchida 
-for (var i = 0; i < HEIGHT; i++) { //looping - itera quantidade de linhas 
-    var row_vector = []; //vector é uma array com uma única direção. 
-    //Cria uma lista que vai salvar todas as suas células dentro dele 
-    var row = $("<tr>"); //é a linha - tr como linha da tabela 
-    for (var j = 0; j < WIDTH; j++) { //looping - itera quantidade de células
+    var field_matrix = []; //começa com uma array vazia 
+    var field = $("#field table"); //field é a tabela prescrita no HTML
+    var counter = 0;
+    //$... é um seletor de jQuery, que funciona exatamente como um querySelectorAll 
+    //Até aqui estamos selecionando a tabela a ser preenchida 
+    for (var i = 0; i < HEIGHT; i++) { //looping - itera quantidade de linhas 
+        var row_vector = []; //vector é uma array com uma única direção. 
+        //Cria uma lista que vai salvar todas as suas células dentro dele 
+        var row = $("<tr>"); //é a linha - tr como linha da tabela 
+        for (var j = 0; j < WIDTH; j++) { //looping - itera quantidade de células
         var cell = $("<td>"); //cria as células (novo nódulo no DOM) que vai ser preenchido com minas ou números
         cell.data("mines", 0); //coloca dados dentro de um elemento HTML. 
         //A propriedade começa em zero
@@ -94,6 +151,7 @@ for (var i = 0; i < HEIGHT; i++) { //looping - itera quantidade de linhas
                         button.remove();
                     })
                     $("#reset").addClass("game-over");
+                    
                     clearInterval(TIMER);
                 } else if ($(this).parent().data("mines") > 0) {
                     $(this).remove();
@@ -203,3 +261,5 @@ $.each(field_matrix, function(index, row) {
 //As minas vão ser colocadas no tabuleiro, um a um. Logo depois, os números 1 são colocados 
 //na primeira iteração do código em torno das minas. 
 // Conforme as iterações acontecem, quando tem mais de uma mina, ele +1 
+
+}
