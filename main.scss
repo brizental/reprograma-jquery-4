@@ -17,6 +17,7 @@ body {
     background-repeat: no-repeat;
     min-height: 100vh;
     position: relative;
+    display: flex;
 }
 
 .button {
@@ -49,7 +50,8 @@ body {
     }
 }
 
-.window {
+.window,
+.ranking {
     background-color: $windows-light-gray;
     border: 2px outset darkgray;
     margin: auto;
@@ -57,12 +59,13 @@ body {
     width: 480px;
     font-size: 14px;
 
-    .window-header {
+    .window-header,
+    .ranking-header {
         background-color: $windows-blue;
         font-weight: bold;
         padding: 5px;
 
-        p {
+        p, h3 {
             color: white;
         }
     }
@@ -160,7 +163,7 @@ body {
         }
     }
 
-    #field {
+    #field, #ranking-lista {
         border: 4px inset $windows-light-gray;
 
         table {
